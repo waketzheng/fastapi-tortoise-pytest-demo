@@ -1,8 +1,25 @@
+from typing import List, Set, Tuple, Union
+
 from tortoise import fields, models
+from tortoise.query_utils import Q
 from tortoise.queryset import QuerySet
 
 
-class CoreModel(models.Model):
+def reduce_query_filters(args: Tuple[Q, ...]) -> Set:
+    fields = set()
+    for q in args:
+        fields |= set(q.filters)
+        c: Union[List[Q], Tuple[Q, ...]] = q.children
+        while c:
+            _c: List[Q] = []
+            for i in c:
+                fields |= set(i.filters)
+                _c += list(i.children)
+            c = _c
+    return fields
+
+
+class AbsModel(models.Model):
     id = fields.IntField(pk=True)
     created_at = fields.DatetimeField(auto_now_add=True, description="Created At")
     updated_at = fields.DatetimeField(auto_now=True, description="Updated At")
@@ -15,10 +32,7 @@ class CoreModel(models.Model):
     @classmethod
     def filter(cls, *args, **kwargs) -> QuerySet:
         field = "is_deleted"
-        if not args or (
-            (query_fields := [k for q in args for k in getattr(q, "filters", {})])
-            and field not in query_fields
-        ):
+        if not args or (field not in reduce_query_filters(args)):
             kwargs.setdefault(field, False)
         return super().filter(*args, **kwargs)
 

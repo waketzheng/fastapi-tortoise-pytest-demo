@@ -1,7 +1,8 @@
-import asyncio
-
 import pytest
+from httpx import AsyncClient
 from tortoise import Tortoise
+
+from main import app
 
 DB_URL = "sqlite://:memory:"
 
@@ -23,8 +24,15 @@ async def init(db_url: str = DB_URL):
 
 
 @pytest.fixture(scope="session")
-def event_loop():
-    return asyncio.get_event_loop()
+def anyio_backend():
+    return "asyncio"
+
+
+@pytest.fixture(scope="session")
+async def client():
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        print("Client is ready")
+        yield client
 
 
 @pytest.fixture(scope="session", autouse=True)

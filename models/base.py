@@ -1,8 +1,7 @@
 from typing import List, Set, Tuple, Union
 
 from tortoise import fields, models
-from tortoise.query_utils import Q
-from tortoise.queryset import QuerySet
+from tortoise.queryset import Q, QuerySet
 
 
 def reduce_query_filters(args: Tuple[Q, ...]) -> Set:

@@ -8,7 +8,7 @@ Async Test Demo for FastAPI+Tortoise-orm+Pytest
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -U pip fastapi tortoise-orm pytest httpx asyncpg python-dotenv pytest-asyncio
+pip install -U pip fastapi tortoise-orm pytest httpx asyncpg python-dotenv
 ```
 
 #### Run Test

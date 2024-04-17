@@ -1,5 +1,7 @@
+from contextlib import asynccontextmanager
+
 import pytest
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from tortoise import Tortoise
 
 from main import app
@@ -19,8 +21,18 @@ async def init_db(db_url, create_db: bool = False, schemas: bool = False) -> Non
         print("Success to generate schemas")
 
 
-async def init(db_url: str = DB_URL):
+async def init(db_url: str = DB_URL) -> None:
     await init_db(db_url, True, True)
+
+
+@asynccontextmanager
+async def register_orm(drop=False):
+    await init()
+    yield
+    if drop:
+        await Tortoise._drop_databases()
+    else:
+        await Tortoise.close_connections()
 
 
 @pytest.fixture(scope="session")
@@ -30,13 +42,13 @@ def anyio_backend():
 
 @pytest.fixture(scope="session")
 async def client():
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         print("Client is ready")
         yield client
 
 
 @pytest.fixture(scope="session", autouse=True)
 async def initialize_tests():
-    await init()
-    yield
-    await Tortoise._drop_databases()
+    async with register_orm(drop=True):
+        yield

@@ -6,13 +6,12 @@ Async Test Demo for FastAPI+Tortoise-orm+Pytest
 #### Install
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -U pip fastapi tortoise-orm pytest httpx asyncpg python-dotenv
+poetry shell
+poetry install --no-root
 ```
 
 #### Run Test
 
 ```bash
-python -m pytest
+poetry run coverage run -m pytest -s
 ```

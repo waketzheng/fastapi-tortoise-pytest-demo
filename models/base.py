@@ -39,4 +39,4 @@ class AbsModel(models.Model):
         exclude = ("created_at", "updated_at", "is_deleted")
 
     def __repr__(self):
-        return f"<{self.__class__.__name__} {self.id}>"
+        return f"<{self.__class__.__name__}(id={self.id})>"

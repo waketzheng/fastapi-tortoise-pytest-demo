@@ -6,7 +6,7 @@ from models.users import User
 
 @pytest.mark.anyio
 async def test_testpost(client: AsyncClient):
-    name, age = ["sam", 99]
+    name, age = "sam", 99
     assert await User.filter(username=name).count() == 0
 
     data = {"username": name, "age": age}

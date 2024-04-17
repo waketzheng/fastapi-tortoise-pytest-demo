@@ -1,1 +1,3 @@
-from .users import User  # NOQA: F401
+from .users import User
+
+__all__ = ("User",)

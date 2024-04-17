@@ -19,6 +19,10 @@ pytest = "^8.1.1"
 starlette = "*"
 pydantic = "*"
 coverage = "^7.4.4"
+click = "*"
+h11 = "*"
+pydantic-core = "*"
+annotated-types = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

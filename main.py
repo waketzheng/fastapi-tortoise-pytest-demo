@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import List
 
 import fastapi_cdn_host
-import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import RegisterTortoise
 
-from models.users import User, User_Pydantic, User_Pydantic_List, UserIn_Pydantic
+from models.users import User, UserIn_Pydantic, UserPydantic
 from settings import ALLOW_ORIGINS, DB_URL
 
 
@@ -39,15 +39,31 @@ app.add_middleware(
 )
 
 
-@app.post("/testpost", response_model=User_Pydantic)
-async def world(user: UserIn_Pydantic):
-    return await User.create(**user.model_dump())
+@app.post("/testpost", response_model=UserPydantic)
+async def world(user: UserIn_Pydantic):  # type:ignore[valid-type]
+    data = user.model_dump(exclude_unset=True)  # type:ignore[attr-defined]
+    user_obj = await User.create(**data)
+    # 2024.04.17 raises ValidationError:
+    """
+    E   pydantic_core._pydantic_core.ValidationError: 1 validation error for User
+    E   Meta
+    E     Extra inputs are not permitted [type=extra_forbidden, input_value=<class 'tortoise.models.Model.Meta'>, input_type=type]
+    E       For further information visit https://errors.pydantic.dev/2.7/v/extra_forbidden
+    """
+    # return await User_Pydantic.from_tortoise_orm(user_obj)
+    return UserPydantic(id=user_obj.id, username=user_obj.username, age=user_obj.age)
 
 
-@app.get("/users", response_model=User_Pydantic_List)
+@app.get("/users", response_model=List[UserPydantic])
 async def user_list():
-    return await User.all()
+    user_objs = await User.all()
+    return [
+        UserPydantic(id=user_obj.id, username=user_obj.username, age=user_obj.age)
+        for user_obj in user_objs
+    ]
 
 
 if __name__ == "__main__":
+    import uvicorn
+
     uvicorn.run(f"{Path(__file__).stem}:app")

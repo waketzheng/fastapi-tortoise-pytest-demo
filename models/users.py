@@ -1,11 +1,10 @@
-from pydantic import BaseModel
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 
 class User(models.Model):
-    id = fields.IntField(pk=True)
-    username = fields.CharField(60)
+    id = fields.IntField(primary_key=True)
+    username = fields.CharField(max_length=60)
     age = fields.IntField()
 
     def __str__(self):
@@ -17,9 +16,3 @@ class User(models.Model):
 
 User_Pydantic = pydantic_model_creator(User)
 UserIn_Pydantic = pydantic_model_creator(User, name="UserIn", exclude_readonly=True)
-
-
-class UserPydantic(BaseModel):
-    id: int
-    username: str
-    age: int

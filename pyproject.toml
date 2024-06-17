@@ -7,18 +7,17 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = "^0.110.2"
-tortoise-orm = {git = "https://github.com/tortoise/tortoise-orm.git"}
-httpx = "^0.27.0"
+fastapi = "^0.111.0"
+tortoise-orm = "^0.21.3"
 asyncpg = "^0.29.0"
 python-dotenv = "^1.0.1"
-uvicorn = {extras = ["standard"], version = "^0.29.0"}
-fastapi-cdn-host = "^0.4.2"
+fastapi-cdn-host = "^0.5.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.0"
-coverage = "^7.5.0"
-click = "*"
+pytest = "^8.2.2"
+coverage = "^7.5.3"
+mypy = "^1.10.0"
+ruff = "^0.4.9"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

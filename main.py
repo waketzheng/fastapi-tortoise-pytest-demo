@@ -12,7 +12,7 @@ from tortoise.contrib.pydantic import PydanticModel
 from models.users import User
 from settings import ALLOW_ORIGINS, DB_URL
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: nocoverage
 
     class UserIn_Pydantic(User, PydanticModel):  # type:ignore[misc]
         pass
@@ -53,7 +53,7 @@ app.add_middleware(
 
 @app.post("/testpost", response_model=User_Pydantic)
 async def world(user: UserIn_Pydantic):
-    data = user.dict(exclude_unset=True)
+    data = user.model_dump(exclude_unset=True)
     user_obj = await User.create(**data)
     return await User_Pydantic.from_tortoise_orm(user_obj)
 

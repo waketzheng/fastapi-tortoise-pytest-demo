@@ -3,7 +3,6 @@ import subprocess
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, List, Optional
 
-import fastapi_cdn_host
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import RegisterTortoise
@@ -40,7 +39,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-fastapi_cdn_host.patch_docs(app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -70,7 +68,7 @@ async def user_list(name: Optional[str] = None, age: Optional[int] = None):
 
 def main() -> None:
     """Run server in development mode"""
-    subprocess.run(["poetry", "run", "fastapi", "dev", __file__, "--port=8000"])
+    subprocess.run(["fastcdn", __file__, "--port=8000"])
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ from tortoise.contrib.pydantic import PydanticModel
 from models.users import User
 from settings import ALLOW_ORIGINS, DB_URL
 
-if TYPE_CHECKING:  # pragma: nocoverage
+if TYPE_CHECKING:
 
     class UserIn_Pydantic(User, PydanticModel):  # type:ignore[misc]
         pass

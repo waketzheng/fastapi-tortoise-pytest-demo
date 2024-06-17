@@ -8,7 +8,7 @@ class User(models.Model):
     age = fields.IntField()
 
     def __str__(self):
-        return self.name
+        return self.username
 
     def __repr__(self):
         return f"<{self.__class__.__name__}(id={self.id})>"

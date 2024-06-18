@@ -22,8 +22,8 @@ async def test_testpost(client: AsyncClient):
     assert await User.filter(username=name).count() == 1
 
     user2 = await User.create(username="James", age=23)
-    assert str(user2) == 'James'
-    assert repr(user2) == '<User(id=2)>'
+    assert str(user2) == "James"
+    assert repr(user2) == "<User(id=2)>"
     user_data_2 = {"id": 2, "username": "James", "age": 23}
     response = await client.get("/users?name=james")
     assert response.status_code == 200

@@ -19,6 +19,7 @@ coverage = "^7.5.3"
 mypy = "^1.10.0"
 ruff = "^0.4.9"
 asgi-lifespan = "^2.1.0"
+httpx = {git="ssh://git@github.com/encode/httpx"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,8 +1,10 @@
 import os
+from typing import AsyncGenerator
 
 import pytest
 from asgi_lifespan import LifespanManager
 from httpx import ASGITransport, AsyncClient
+from typing_extensions import Self
 
 # Must set env before importing main.app
 os.environ["DB_URL"] = "sqlite://:memory:"
@@ -21,10 +23,24 @@ def anyio_backend():
     return "asyncio"
 
 
+class TestClient(AsyncClient):
+    def __init__(self, app, base_url="http://test", mount_lifespan=True, **kw) -> None:
+        self.mount_lifespan = mount_lifespan
+        super().__init__(transport=ASGITransport(app), base_url=base_url, **kw)
+
+    async def __aenter__(self) -> Self:
+        if self.mount_lifespan:
+            app = self._transport.app  # type:ignore
+            self._manager = await LifespanManager(app).__aenter__()
+            self._transport = ASGITransport(app=self._manager.app)
+        return await super().__aenter__()
+
+    async def __aexit__(self, *args, **kw):
+        await self.__aexit__(*args, **kw)
+        await self._manager.__aexit__(*args, **kw)
+
+
 @pytest.fixture(scope="session")
-async def client():
-    async with LifespanManager(app):
-        transport = ASGITransport(app=app)
-        async with AsyncClient(transport=transport, base_url="http://test") as client:
-            print("Client is ready")
-            yield client
+async def client() -> AsyncGenerator[TestClient, None]:
+    async with TestClient(app) as c:
+        yield c

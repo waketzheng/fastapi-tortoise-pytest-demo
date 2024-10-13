@@ -6,7 +6,6 @@ Async Test Demo for FastAPI+Tortoise-orm+Pytest
 #### Install
 
 ```bash
-poetry shell
 poetry install
 ```
 

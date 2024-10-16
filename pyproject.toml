@@ -7,19 +7,23 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.8"
-fastapi = "^0.111.0"
-tortoise-orm = "^0.21.3"
+fastapi = {version="^0.115.2", extras=["standard"]}
+tortoise-orm = "^0.21.7"
 asyncpg = "^0.29.0"
 python-dotenv = "^1.0.1"
-fastapi-cdn-host = "^0.5.0"
+fastapi-cdn-host = "^0.8.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
-coverage = "^7.5.3"
-mypy = "^1.10.0"
-ruff = "^0.4.9"
+pytest = "^8.3.3"
+mypy = "^1.12.0"
+ruff = "^0.6.9"
 asgi-lifespan = "^2.1.0"
-httpx = {git="ssh://git@github.com/encode/httpx"}
+httpx = "^0.27.2"
+coverage = [
+    {version="^7.6.3", python="^3.9"},
+    {version="7.6.1", python="3.8"}
+]
+typer = "^0.12.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

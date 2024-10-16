@@ -1,5 +1,5 @@
 import os
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional
 
 import pytest
 from asgi_lifespan import LifespanManager
@@ -26,6 +26,7 @@ def anyio_backend():
 class TestClient(AsyncClient):
     def __init__(self, app, base_url="http://test", mount_lifespan=True, **kw) -> None:
         self.mount_lifespan = mount_lifespan
+        self._manager: Optional[LifespanManager] = None
         super().__init__(transport=ASGITransport(app), base_url=base_url, **kw)
 
     async def __aenter__(self) -> Self:
@@ -36,8 +37,9 @@ class TestClient(AsyncClient):
         return await super().__aenter__()
 
     async def __aexit__(self, *args, **kw):
-        await self.__aexit__(*args, **kw)
-        await self._manager.__aexit__(*args, **kw)
+        await super().__aexit__(*args, **kw)
+        if self._manager is not None:
+            await self._manager.__aexit__(*args, **kw)
 
 
 @pytest.fixture(scope="session")

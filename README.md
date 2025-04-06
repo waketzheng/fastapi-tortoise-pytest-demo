@@ -1,7 +1,7 @@
 # fastapi-tortoise-pytest-demo
 
-Async Test Demo for FastAPI+Tortoise-orm+Pytest 
-- Python3.8+ is required
+Async Test Demo for FastAPI+Tortoise-orm+Pytest
+- Python3.9+ is required
 
 #### Install
 

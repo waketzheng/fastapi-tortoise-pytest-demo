@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 import subprocess
-from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from tortoise.contrib.fastapi import RegisterTortoise
+from tortoise.contrib.fastapi import register_tortoise
 from tortoise.contrib.pydantic import PydanticModel
 
 from models.users import User
@@ -22,24 +23,18 @@ else:
     from models.users import User_Pydantic, UserIn_Pydantic
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    async with RegisterTortoise(
-        app,
-        config={
-            "connections": {"default": DB_URL},
-            "apps": {"models": {"models": ["models"]}},
-            "use_tz": True,
-            "timezone": "Asia/Shanghai",
-        },
-        generate_schemas=True,
-        add_exception_handlers=True,
-    ):
-        yield
-
-
-app = FastAPI(lifespan=lifespan)
-
+app = FastAPI()
+register_tortoise(
+    app,
+    config={
+        "connections": {"default": DB_URL},
+        "apps": {"models": {"models": ["models"]}},
+        "use_tz": True,
+        "timezone": "Asia/Shanghai",
+    },
+    generate_schemas=True,
+    add_exception_handlers=True,
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOW_ORIGINS,
@@ -56,8 +51,8 @@ async def world(user: UserIn_Pydantic):
     return await User_Pydantic.from_tortoise_orm(user_obj)
 
 
-@app.get("/users", response_model=List[User_Pydantic])
-async def user_list(name: Optional[str] = None, age: Optional[int] = None):
+@app.get("/users", response_model=list[User_Pydantic])
+async def user_list(name: str | None = None, age: int | None = None):
     qs = User.all()
     if name:
         qs = qs.filter(username__icontains=name)

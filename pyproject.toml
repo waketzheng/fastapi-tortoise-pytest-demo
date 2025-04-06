@@ -1,32 +1,30 @@
-[tool.poetry]
+[project]
 name = "fastapi-tortoise-async-test-demo"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
-authors = ["Waket Zheng <waketzheng@gmail.com>"]
+authors = [{name="Waket Zheng", email="waketzheng@gmail.com"}]
 package-mode = false
-
-[tool.poetry.dependencies]
-python = "^3.8"
-fastapi = {version="^0.115.2", extras=["standard"]}
-tortoise-orm = "^0.21.7"
-asyncpg = "^0.29.0"
-python-dotenv = "^1.0.1"
-fastapi-cdn-host = "^0.8.0"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi[standard] (>=0.115.12,<0.116.0)",
+    "tortoise-orm (>=0.24.2,<0.25.0)",
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "fastapi-cdn-host (>=0.9.0,<0.10.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "pydantic (>=2.0.0,<2.11.0)"
+]
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.3"
-mypy = "^1.12.0"
-ruff = "^0.6.9"
+pytest = "^8.3.5"
+mypy = "^1.15.0"
+ruff = "^0.11.4"
 asgi-lifespan = "^2.1.0"
-httpx = "^0.27.2"
-coverage = [
-    {version="^7.6.3", python="^3.9"},
-    {version="7.6.1", python="3.8"}
-]
-typer = "^0.12.5"
+coverage = "^7.8.0"
+typer = "^0.15.2"
+asynctor = {extras = ["fastapi"], version = "^0.7.2"}
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
@@ -39,4 +37,13 @@ omit = ["*/tests/*"]
 exclude_lines = [
     'if __name__ == "__main__":',
     "if TYPE_CHECKING:",
+]
+
+[tool.ruff.lint]
+extend-select = [
+    "I",      # https://docs.astral.sh/ruff/rules/#isort-i
+    "SIM",    # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+    "FA",     # https://docs.astral.sh/ruff/rules/#flake8-future-annotations-fa
+    "UP",     # https://docs.astral.sh/ruff/rules/#pyupgrade-up
+    "RUF100", # https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
 ]

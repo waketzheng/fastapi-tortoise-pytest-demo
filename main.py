@@ -2,36 +2,18 @@
 from __future__ import annotations
 
 import subprocess
-from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
-from tortoise.contrib.pydantic import PydanticModel
 
-from models.users import User
-from settings import ALLOW_ORIGINS, DB_URL
-
-if TYPE_CHECKING:
-
-    class UserIn_Pydantic(User, PydanticModel):  # type:ignore[misc]
-        pass
-
-    class User_Pydantic(User, PydanticModel):  # type:ignore[misc]
-        pass
-else:
-    from models.users import User_Pydantic, UserIn_Pydantic
-
+from models.users import User, User_Pydantic, UserIn_Pydantic
+from settings import ALLOW_ORIGINS, TORTOISE_ORM
 
 app = FastAPI()
 register_tortoise(
     app,
-    config={
-        "connections": {"default": DB_URL},
-        "apps": {"models": {"models": ["models"]}},
-        "use_tz": True,
-        "timezone": "Asia/Shanghai",
-    },
+    config=TORTOISE_ORM,
     generate_schemas=True,
     add_exception_handlers=True,
 )
@@ -61,10 +43,5 @@ async def user_list(name: str | None = None, age: int | None = None):
     return await User_Pydantic.from_queryset(qs)
 
 
-def main() -> None:
-    """Run server in development mode"""
-    subprocess.run(["fastcdn", __file__, "--port=8000"])
-
-
 if __name__ == "__main__":
-    main()
+    subprocess.run(["fastcdn", __file__, "--port=8000"])  # Run server in dev mode

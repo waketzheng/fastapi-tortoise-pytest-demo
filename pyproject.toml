@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-tortoise-async-test-demo"
-version = "0.2.0"
+version = "0.3.0"
 description = ""
 authors = [{name="Waket Zheng", email="waketzheng@gmail.com"}]
 requires-python = ">=3.9"

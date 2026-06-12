@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 from __future__ import annotations
 
-import subprocess
+from pathlib import Path
 
+from asynctor.contrib.fastapi import config_access_log, runserver
+from asynctor.utils import ExtendSyspath
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
-from models.users import User, User_Pydantic, UserIn_Pydantic
-from settings import ALLOW_ORIGINS, TORTOISE_ORM
+with ExtendSyspath(BASE_DIR := Path(__file__).parent.parent):
+    from app import __version__
+    from app.models.users import User, User_Pydantic, UserIn_Pydantic
+    from app.settings import ALLOW_ORIGINS, TORTOISE_ORM
 
-app = FastAPI()
+app = FastAPI(title=BASE_DIR.name, version=__version__)
+config_access_log(app)
 register_tortoise(
     app,
     config=TORTOISE_ORM,
@@ -44,4 +49,4 @@ async def user_list(name: str | None = None, age: int | None = None):
 
 
 if __name__ == "__main__":
-    subprocess.run(["fastcdn", __file__, "--port=8000"])  # Run server in dev mode
+    runserver(app, reload=True)

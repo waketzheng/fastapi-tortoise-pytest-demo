@@ -23,11 +23,9 @@ class User(Model):
 
 if TYPE_CHECKING:
 
-    class UserIn_Pydantic(User, PydanticModel):  # type:ignore[misc]
-        pass
+    class UserIn_Pydantic(User, PydanticModel): ...  # type:ignore
 
-    class User_Pydantic(User, PydanticModel):  # type:ignore[misc]
-        pass
+    class User_Pydantic(User, PydanticModel): ...  # type:ignore
 
 else:
     User_Pydantic = pydantic_model_creator(User)

@@ -12,43 +12,38 @@ help:
 	@echo  "    build   Build wheel file and tar file from source to dist/"
 
 up:
-	uv lock --upgrade
-	$(MAKE) deps options=--frozen
-	pre-commit autoupdate
+	@just up
+	uvx prek autoupdate
 
 lock:
 	uv lock
 
 venv:
-	pdm venv create $(options) $(version)
+	@just venv $(options) $(version)
 
 venv39:
 	$(MAKE) venv version=3.9
 
 deps:
-	uv sync --all-extras --all-groups --inexact $(options)
+	@just deps $(options)
 
 start:
-	pre-commit install
+	uvx prek install
 	$(MAKE) deps
 
 _style:
-	ruff format
-	ruff check --fix
+	@just _style
 style: deps _style
 
 _check:
-	ruff format --check
-	ruff check
-	mypy .
+	@just _check
 check: deps _check
 
 _lint:
-	$(MAKE) _style
-	mypy .
+	@just _lint
 lint: deps _lint
 
 _test:
-	coverage run -m pytest
-	coverage report -m
+	@just _test
+	@just report
 test: deps _test

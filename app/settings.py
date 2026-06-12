@@ -14,7 +14,7 @@ DB_URL = os.getenv(
 )
 TORTOISE_ORM = {
     "connections": {"default": DB_URL},
-    "apps": {"models": {"models": ["models"]}},
+    "apps": {"models": {"models": ["app.models"]}},
     "use_tz": os.getenv("TORTOISE_USE_TZ", "").lower()
     not in ("0", "off", "f", "false"),
     "timezone": os.getenv("TIMEZONE", "Asia/Shanghai"),

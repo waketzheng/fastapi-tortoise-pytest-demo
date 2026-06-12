@@ -79,11 +79,9 @@ _lint: _style _codeqc
 
 lint: deps _lint
 
-test *args: deps
-    just _pytest {{ args }}
-
-_pytest *args:
-    uv run --no-sync pytest {{ args }}
+_test *args:
+    uv run --no-sync coverage run -m pytest {{ args }}
+test *args: deps _test
 
 report:
     uv run --no-sync coverage report -m

@@ -1,12 +1,12 @@
 # fastapi-tortoise-pytest-demo
 
 Async Test Demo for FastAPI+Tortoise-orm+Pytest
-- Python3.9+ is required
+- Python3.10+ is required
 
 #### Install Dependencies
 
 ```bash
-pdm deps
+just deps
 # Or by pip:
 #python -m venv .venv && source .venv/bin/activate
 #pip install -U pip && pip install --group dev -e .
@@ -15,7 +15,7 @@ pdm deps
 #### Run Test
 
 ```bash
-pdm test
+just test
 # Or:
 #coverage run -m pytest -s && coverage report --omit="tests/*" -m
 ```
@@ -23,5 +23,5 @@ pdm test
 #### Report coverage
 
 ```bash
-pdm report
+just report
 ```

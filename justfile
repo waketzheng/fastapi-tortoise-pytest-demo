@@ -47,12 +47,15 @@ add *args: venv
     uv add {{ args }}
     @just _pypi
 
+_run *args:
+    uv run --no-sync {{ args }}
+
 shell *args: venv
-    uv run --no-sync tortoise shell {{ args }}
+    @just _run tortoise shell {{ args }}
 
 # Runserver
 dev *args:
-    uv run --no-sync app/main.py {{ args }}
+    @just _run app/main.py {{ args }}
 
 _style *args:
     just _ruff format {{ args }}
@@ -65,8 +68,8 @@ style: deps _style
 
 _codeqc:
     uvx ty check
-    uv run --no-sync mypy app
-    uvx pyright --pythonpath={{PY_EXEC}} app
+    @just _run mypy app
+    uvx pyright --pythonpath={{ PY_EXEC }} app
 
 codeqc: deps _codeqc
 
@@ -82,11 +85,11 @@ _lint: _style _codeqc
 lint: deps _lint
 
 _test *args:
-    uv run --no-sync coverage run -m pytest {{ args }}
+    @just _run coverage run -m pytest {{ args }}
 test *args: deps _test
 
 report:
-    uv run --no-sync coverage report -m
+    @just _run coverage report -m
 
 fast command *args:
     uvx --from fast-dev-cli fast {{ command }} {{ args }}
@@ -109,3 +112,12 @@ minor *args:
     @just version minor --commit {{ args }}
     git --no-pager log -1
     @just tag
+
+makemigrations *args:
+    @just _run tortoise makemigrations {{ args }}
+
+migrate *args:
+    @just _run tortoise migrate {{ args }}
+
+sqlmigrate name="0001_initial" *args:
+    @just _run tortoise sqlmigrate models {{ name }} {{ args }}

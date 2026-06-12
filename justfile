@@ -6,6 +6,7 @@
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 
 VENV_CREATE := "uvx pdm venv create --with-pip"
+PY_EXEC := if os_family() == "windows" { ".venv/Scripts/python.exe" } else { ".venv/bin/python" }
 
 default:
     @just --list
@@ -65,6 +66,7 @@ style: deps _style
 _codeqc:
     uvx ty check
     uv run --no-sync mypy app
+    uvx pyright --pythonpath={{PY_EXEC}} app
 
 codeqc: deps _codeqc
 

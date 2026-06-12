@@ -1,5 +1,6 @@
 import os
 
+from asynctor.utils import load_bool
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,9 +15,8 @@ DB_URL = os.getenv(
 )
 TORTOISE_ORM = {
     "connections": {"default": DB_URL},
-    "apps": {"models": {"models": ["app.models"]}},
-    "use_tz": os.getenv("TORTOISE_USE_TZ", "").lower()
-    not in ("0", "off", "f", "false"),
+    "apps": {"models": {"models": ["app.models"], "migrations": "app.migrations"}},
+    "use_tz": load_bool("TORTOISE_USE_TZ"),
     "timezone": os.getenv("TIMEZONE", "Asia/Shanghai"),
 }
 

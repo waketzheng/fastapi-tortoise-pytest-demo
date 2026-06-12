@@ -15,7 +15,7 @@ with ExtendSyspath(BASE_DIR := Path(__file__).parent.parent):
     from app.settings import ALLOW_ORIGINS, TORTOISE_ORM
 
 app = FastAPI(title=BASE_DIR.name, version=__version__)
-config_access_log(app)
+config_access_log()
 register_tortoise(
     app,
     config=TORTOISE_ORM,
